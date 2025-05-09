@@ -1,0 +1,10 @@
+/node_modules
+/generated
+.env
+.env.*
+/prisma/dev.db
+/prisma/*.db
+/prisma/*.sqlite
+/prisma/migrations/
+npm-debug.log
+.DS_Store
