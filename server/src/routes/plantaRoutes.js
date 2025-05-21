@@ -1,12 +1,12 @@
-const express = require("express");
-const autenticarToken = require("../middlewares/authMiddleware");
-const {
+import express from "express";
+import autenticarToken from "../middlewares/authMiddleware";
+import {
     criarPlanta,
     listarPlantas,
     detalharPlanta,
     atualizarPlanta,
     removerPlanta
-} = require("../controllers/plantaController");
+} from "../controllers/plantaController";
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.get("/:id", autenticarToken, detalharPlanta);
 router.put("/:id", autenticarToken, atualizarPlanta);
 router.delete("/:id", autenticarToken, removerPlanta);
 
-module.exports = router;
+export default router;

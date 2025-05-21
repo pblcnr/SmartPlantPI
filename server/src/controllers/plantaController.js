@@ -1,8 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
 
 // Criar planta
-async function criarPlanta(req, res) {
+export async function criarPlanta(req, res) {
     const { nome } = req.body;
     const usuarioId = req.usuario.id;
 
@@ -25,7 +26,7 @@ async function criarPlanta(req, res) {
 }
 
 // Listar plantas do usuário
-async function listarPlantas(req, res) {
+export async function listarPlantas(req, res) {
     const usuarioId = req.usuario.id;
 
     try {
@@ -39,7 +40,7 @@ async function listarPlantas(req, res) {
 }
 
 // Detalhar plantas por ID
-async function detalharPlanta(req, res) {
+export async function detalharPlanta(req, res) {
     const usuarioId = req.usuario.id;
     const { id } = req.params;
 
@@ -58,7 +59,7 @@ async function detalharPlanta(req, res) {
 }
 
 // Atualizar planta
-async function atualizarPlanta(req, res) {
+export async function atualizarPlanta(req, res) {
     const usuarioId = req.usuario.id;
     const { id } = req.params;
     const { nome } = req.body;
@@ -80,7 +81,7 @@ async function atualizarPlanta(req, res) {
 }
 
 // Remover planta
-async function removerPlanta(req, res) {
+export async function removerPlanta(req, res) {
     const usuarioId = req.usuario.id;
     const { id } = req.params;
 
@@ -98,11 +99,3 @@ async function removerPlanta(req, res) {
         res.status(500).json({ error: "Erro ao remover planta." });
     }
 }
-
-module.exports = {
-    criarPlanta,
-    listarPlantas,
-    detalharPlanta,
-    atualizarPlanta,
-    removerPlanta
-};

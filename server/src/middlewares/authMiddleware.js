@@ -1,9 +1,10 @@
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
+import dotenv from dotenv;
+import jwt from "jsonwebtoken";
+dotenv.config();
 
 const chaveSecreta = process.env.JWT_SECRET;
 
-function autenticarToken(req, res, next) {
+export default function autenticarToken(req, res, next) {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
 
@@ -19,5 +20,3 @@ function autenticarToken(req, res, next) {
         next();
     });
 }
-
-module.exports = autenticarToken;

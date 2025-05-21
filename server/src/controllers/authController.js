@@ -1,11 +1,12 @@
-require("dotenv").config();
-const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 const prisma = new PrismaClient();
 
-async function registro(req, res) {
+export async function registro(req, res) {
     const { nome, email, password } = req.body;
 
     if (!nome || !email || !password) {
@@ -31,7 +32,7 @@ async function registro(req, res) {
     }
 }
 
-async function login(req, res) {
+export async function login(req, res) {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -63,5 +64,3 @@ async function login(req, res) {
         res.status(500).json({ error: "Erro ao fazer login." });
     }
 }
-
-module.exports = { registro, login };

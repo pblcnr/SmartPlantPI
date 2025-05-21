@@ -22,21 +22,23 @@ model Usuario {
 }
 
 model Planta {
-  id          Int       @id @default(autoincrement())
-  nome        String
-  usuarioId   Int
-  usuario     Usuario   @relation(fields: [usuarioId], references: [id])
-  sensorData  SensorData[]
-  alerta      Alerta?
+  id                Int       @id @default(autoincrement())
+  nome              String
+  usuarioId         Int
+  usuario           Usuario   @relation(fields: [usuarioId], references: [id])
+  sensorData        SensorData[]
+  alerta            Alerta?
+  historicoAlertas  HistoricoAlerta[]
 }
 
 model SensorData {
-  id            Int         @id @default(autoincrement())
-  plantaId      Int
-  timestamp     DateTime    @default(now())
-  temperatura   Float
-  umidade       Float
-  planta        Planta      @relation(fields: [plantaId], references: [id])
+  id                Int         @id @default(autoincrement())
+  plantaId          Int
+  timestamp         DateTime    @default(now())
+  temperatura       Float
+  umidade           Float
+  planta            Planta      @relation(fields: [plantaId], references: [id])
+  historicoAlertas  HistoricoAlerta[]
 }
 
 model Alerta {
@@ -44,4 +46,14 @@ model Alerta {
   plantaId      Int       @unique
   minUmidade    Float
   planta        Planta    @relation(fields: [plantaId], references: [id])
+}
+
+model HistoricoAlerta {
+  id            Int         @id @default(autoincrement())
+  plantaId      Int
+  sensorDataId  Int
+  mensagem      String
+  timestamp     DateTime    @default(now())
+  planta        Planta      @relation(fields: [plantaId], references: [id])
+  sensorData    SensorData  @relation(fields: [sensorDataId], references: [id])
 }
