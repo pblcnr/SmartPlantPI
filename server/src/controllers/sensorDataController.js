@@ -26,7 +26,7 @@ export async function registrarSensorData(req, res) {
 
 // Listar histórico de dados do sensor
 export async function listarSensorData(req, res) {
-    const { plantaId } = req.param
+    const { plantaId } = req.params;
 
     try {
         const historico = await prisma.sensorData.findMany({

@@ -1,12 +1,12 @@
 import express from "express";
-import autenticarToken from "../middlewares/authMiddleware";
+import autenticarToken from "../middlewares/authMiddleware.js";
 import {
     criarPlanta,
     listarPlantas,
     detalharPlanta,
     atualizarPlanta,
     removerPlanta
-} from "../controllers/plantaController";
+} from "../controllers/plantaController.js";
 
 const router = express.Router();
 

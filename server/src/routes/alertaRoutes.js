@@ -1,10 +1,10 @@
 import express from "express";
 import autenticarToken from "../middlewares/authMiddleware.js";
-import { configurarLimiteAlerta, consultarLimiteAlerta } from "../controllers/alertLimitController.js";
+import { configurarAlerta, consultarAlerta } from "../controllers/alertaController.js";
 
 const router = express.Router();
 
-router.post("/:plantId/alerta", autenticarToken, configurarLimiteAlerta);
-router.get("/:plantId/alerta", autenticarToken, consultarLimiteAlerta);
+router.post("/:plantId/alerta", autenticarToken, configurarAlerta);
+router.get("/:plantId/alerta", autenticarToken, consultarAlerta);
 
 export default router;
