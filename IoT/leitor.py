@@ -8,7 +8,7 @@ sensor = adafruit_dht.DHT22(board.D4)
 time.sleep(2)
 
 conn = mysql.connector.connect(
-    host="192.168.100.199",
+    host="192.168.100.190",
     port=3306,
     user="smartplant",
     password="smartplant",

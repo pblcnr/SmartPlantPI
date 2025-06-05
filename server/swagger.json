@@ -81,6 +81,70 @@
         }
       }
     },
+    "/api/auth/usuario": {
+      "get": {
+        "summary": "Obtém os dados do usuário autenticado",
+        "tags": ["Autenticação"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nome": { "type": "string", "example": "João Silva" },
+                    "email": { "type": "string", "example": "usuario@email.com" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token não fornecido ou inválido" },
+          "404": { "description": "Usuário não encontrado" },
+          "500": { "description": "Erro ao buscar usuário" }
+        }
+      },
+      "put": {
+        "summary": "Atualiza nome e e-mail do usuário autenticado",
+        "tags": ["Autenticação"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": { "type": "string", "example": "Novo Nome" },
+                  "email": { "type": "string", "example": "novo@email.com" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nome": { "type": "string", "example": "Novo Nome" },
+                    "email": { "type": "string", "example": "novo@email.com" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Nome e email são obrigatórios" },
+          "401": { "description": "Token não fornecido ou inválido" },
+          "500": { "description": "Erro ao atualizar usuário" }
+        }
+      }
+    },
     "/api/plantas": {
       "post": {
         "summary": "Cria uma nova planta",

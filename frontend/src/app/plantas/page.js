@@ -1,30 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
-import Sidebar from "./components/Sidebar";
-import PlantCard from "./components/PlantCard";
-import AlertPanel from "./components/AlertPanel";
+import Sidebar from "../components/Sidebar";
+import PlantCard from "../components/PlantCard";
 
-export default function Dashboard() {
-  const [usuario, setUsuario] = useState({ nome: "" });
+export default function MinhasPlantas() {
   const [plantas, setPlantas] = useState([]);
-  const [alertas, setAlertas] = useState([]);
   const [carregando, setCarregando] = useState(true);
-
-  // Para o formulário de adicionar planta
   const [showForm, setShowForm] = useState(false);
   const [novaPlanta, setNovaPlanta] = useState({ nome: "" });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const nome = localStorage.getItem("usuarioNome") || "Usuário";
-    setUsuario({ nome });
-
     if (!token) {
       window.location.href = "/auth";
       return;
     }
-
-    // Buscar plantas
     fetch("http://localhost:3001/api/plantas", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -53,19 +43,7 @@ export default function Dashboard() {
         setPlantas(plantasComLeitura);
         setCarregando(false);
       });
-
-    // Buscar alertas recentes (ajuste conforme sua lógica)
-    fetch("http://localhost:3001/api/plantas/1/alertas", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(data => setAlertas(Array.isArray(data) ? data : []));
   }, []);
-
-  function handleLogout() {
-    localStorage.removeItem("token");
-    window.location.href = "/auth";
-  }
 
   // Função para deletar planta
   async function handleDeletePlanta(plantaId) {
@@ -118,16 +96,19 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar onLogout={handleLogout} />
+      <Sidebar onLogout={() => {
+        localStorage.removeItem("token");
+        window.location.href = "/auth";
+      }} />
       <main className="flex-1 bg-gray-100 p-8 text-gray-900">
         <header className="mb-8">
           <div className="rounded-xl bg-gradient-to-r from-green-600 to-green-400 p-6 shadow-md flex items-center justify-center">
-            <h2 className="text-3xl font-bold text-white drop-shadow">Bem-vindo, {usuario.nome}!</h2>
+            <h2 className="text-3xl font-bold text-white drop-shadow">Minhas Plantas</h2>
           </div>
         </header>
         <section className="mb-8">
           <button
-            className="mb-6 px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors font-semibold cursor-pointer"
+            className="mb-6 px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors font-semibold"
             onClick={() => setShowForm(true)}
           >
             + Adicionar nova planta
@@ -148,14 +129,14 @@ export default function Dashboard() {
                   <div className="flex gap-2 justify-end">
                     <button
                       type="button"
-                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 cursor-pointer"
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
                       onClick={() => setShowForm(false)}
                     >
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800 cursor-pointer"
+                      className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
                     >
                       Salvar
                     </button>
@@ -170,11 +151,6 @@ export default function Dashboard() {
                 <PlantCard planta={planta} onDelete={handleDeletePlanta} />
               </div>
             ))}
-          </div>
-        </section>
-        <section>
-          <div className="max-w-md mx-auto">
-            <AlertPanel alertas={alertas} />
           </div>
         </section>
       </main>

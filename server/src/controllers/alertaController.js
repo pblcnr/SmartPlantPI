@@ -39,3 +39,22 @@ export async function consultarAlerta(req, res) {
         res.status(500).json({ error: "Erro ao consultar limite de alerta." });
     }
 }
+
+export async function listarAlertasUsuario(req, res) {
+    try {
+        const usuarioId = req.usuario.id;
+        const plantas = await prisma.planta.findMany({
+            where: { usuarioId },
+            select: { id: true, nome: true }
+        });
+        const plantasIds = plantas.map(p => p.id);
+
+        const alertas = await prisma.alerta.findMany({
+            where: {plantaId: { in: plantasIds } },
+            include: { planta: { select: { nome: true } } }
+        });
+        res.json(alertas);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao listar alertas." });
+    }
+}

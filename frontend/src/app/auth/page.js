@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
@@ -37,26 +38,26 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex bg-gray-100">
       {/* Coluna Esquerda */}
-      <div className="w-1/2 bg-green-700 flex flex-col justify-center items-center text-white">
-        <img src="/logo.png" alt="Logo" className="w-32 mb-4" />
-        <h1 className="text-4xl font-bold">SmartPlant</h1>
-        <p className="text-2x font-bold">Monitoramento inteligente de plantas</p>
+      <div className="w-1/2 bg-gradient-to-b from-green-700 to-green-500 flex flex-col justify-center items-center text-white">
+        <Image src="/img/logo.png" alt="Logo" className="w-90 mb-10 drop-shadow-lg rounded-full" width={200} height={200} />
+        <h1 className="text-4xl font-extrabold mb-2 drop-shadow-lg">SmartPlant</h1>
+        <p className="text-xl font-semibold drop-shadow-lg">Sua planta conectada.</p>
       </div>
       {/* Coluna Direita */}
-      <div className="w-1/2 flex flex-col bg-amber-100 justify-center items-center">
-        <div className="w-full max-w-md p-8 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-6">
-            {isLogin ? "Login" : "Cadastro"}
-          </h2>
+      <div className="w-1/2 flex flex-col justify-center items-center">
+        <div className="w-full max-w-md p-10 bg-white rounded-xl shadow-lg">
+          <h2 className="text-3xl font-bold mb-8 text-green-700 text-center drop-shadow">{
+            isLogin ? "Login" : "Cadastro"
+          }</h2>
           <form onSubmit={handleSubmit}>
             {!isLogin && (
               <input
                 type="text"
                 name="nome"
                 placeholder="Nome"
-                className="w-full mb-4 p-2 border rounded"
+                className="w-full mb-4 p-3 border border-green-300 rounded text-gray-900 text-lg"
                 value={form.nome}
                 onChange={handleChange}
                 required
@@ -66,7 +67,7 @@ export default function Home() {
               type="email"
               name="email"
               placeholder="E-mail"
-              className="w-full mb-4 p-2 border rounded"
+              className="w-full mb-4 p-3 border border-green-300 rounded text-gray-900 text-lg"
               value={form.email}
               onChange={handleChange}
               required
@@ -75,24 +76,24 @@ export default function Home() {
               type="password"
               name="password"
               placeholder="Senha"
-              className="w-full mb-6 p-2 border rounded"
+              className="w-full mb-6 p-3 border border-green-300 rounded text-gray-900 text-lg"
               value={form.password}
               onChange={handleChange}
               required
             />
             <button
               type="submit"
-              className="w-full bg-green-700 text-white py-2 rounded hover:bg-green-800"
+              className="w-full bg-green-700 text-white py-3 rounded font-bold text-lg hover:bg-green-800 transition-colors shadow"
             >
               {isLogin ? "Entrar" : "Cadastrar"}
             </button>
           </form>
-          <p className="mt-4 text-center">
+          <p className="mt-6 text-center text-gray-700 text-base">
             {isLogin ? (
               <>
                 Não tem conta?{" "}
                 <button
-                  className="text-green-700 font-semibold cursor-pointer"
+                  className="text-green-700 font-bold underline cursor-pointer"
                   onClick={() => {
                     setIsLogin(false);
                     setMensagem("");
@@ -105,7 +106,7 @@ export default function Home() {
               <>
                 Já tem conta?{" "}
                 <button
-                  className="text-green-700 font-semibold cursor-pointer"
+                  className="text-green-700 font-bold underline cursor-pointer"
                   onClick={() => {
                     setIsLogin(true);
                     setMensagem("");
@@ -117,7 +118,7 @@ export default function Home() {
             )}
           </p>
           {mensagem && (
-            <div className="mt-4 text-center text-red-600">{mensagem}</div>
+            <div className="mt-4 text-center text-red-600 font-semibold">{mensagem}</div>
           )}
         </div>
       </div>

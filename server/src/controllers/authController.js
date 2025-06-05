@@ -66,3 +66,40 @@ export async function login(req, res) {
         res.status(500).json({ error: "Erro ao fazer login." });
     }
 }
+
+export async function atualizarUsuario(req, res) {
+    const { nome, email } = req.body;
+    const usuarioId = req.usuario.id;
+
+    if (!nome || !email) {
+        return res.status(400).json({ error: "Nome e email são obrigatórios."});
+    }
+
+    try {
+        const usuario = await prisma.usuario.update({
+            where: { id: usuarioId },
+            data: { nome, email}
+        });
+        res.json({ nome: usuario.nome, email: usuario.email });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao atualizar usuário."});
+    }
+}
+
+export async function obterUsuario(req, res) {
+    try {
+        const usuarioId = req.usuario.id;
+        const usuario = await prisma.usuario.findUnique({
+            where: { id: usuarioId},
+            select: { nome: true, email: true }
+        });
+
+        if (!usuario) {
+            return res.status(404).json({ error: "Usuário não encontrado." });
+        }
+
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar usuário. "});
+    }
+}
