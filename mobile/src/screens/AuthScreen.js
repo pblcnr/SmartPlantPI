@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 
-export default function AuthScreen() {
+export default function AuthScreen({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({ nome: '', email: '', password: '' });
   const [mensagem, setMensagem] = useState('');
@@ -14,15 +14,15 @@ export default function AuthScreen() {
     setMensagem('');
     const url = isLogin ? '/api/auth/login' : '/api/auth/registro';
     try {
-      const res = await fetch(`http://localhost:3001${url}`, {
+      const res = await fetch(`http://192.168.100.190:3001${url}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data.token) {
         setMensagem(isLogin ? 'Login realizado!' : 'Cadastro realizado!');
-        // Salve o token e navegue para o app principal
+        onLogin(data.token);
       } else {
         setMensagem(data.error || 'Erro ao enviar formulário.');
       }

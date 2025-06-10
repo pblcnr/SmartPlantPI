@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import plantaRoutes from "./routes/plantaRoutes.js";
 import sensorDataRoutes from "./routes/sensorDataRoutes.js";
 import alertaRoutes from "./routes/alertaRoutes.js";
+import estatisticasRoutes from "./routes/estatisticasRoutes.js";
 import swaggerUi from "swagger-ui-express";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -21,6 +22,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/plantas", plantaRoutes);
 app.use("/api/plantas", sensorDataRoutes);
 app.use("/api/plantas", alertaRoutes);
+app.use("/api", estatisticasRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
