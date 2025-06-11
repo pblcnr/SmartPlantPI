@@ -26,7 +26,7 @@ export async function registro(req, res) {
             data: { nome, email, senha: hashedPassword },
         });
 
-        res.status(201).json({ id: usuario.id, nome: usuario.nome, email: usuario.email });
+        res.status(201).json({ id: usuario.id.toString(), nome: usuario.nome, email: usuario.email });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Erro ao cadastrar usuário." });
@@ -53,14 +53,14 @@ export async function login(req, res) {
             return res.status(401).json({ error: "Usuário ou senha inválidos" });
         }
 
-        // Gera token JWT
+        // Gera token JWT (convertendo id para string)
         const token = jwt.sign(
-            { id: usuario.id, email: usuario.email },
+            { id: usuario.id.toString(), email: usuario.email },
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
         );
 
-        res.json({ token, usuario: { id: usuario.id, nome: usuario.nome, email: usuario.email } });
+        res.json({ token, usuario: { id: usuario.id.toString(), nome: usuario.nome, email: usuario.email } });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Erro ao fazer login." });
@@ -77,8 +77,8 @@ export async function atualizarUsuario(req, res) {
 
     try {
         const usuario = await prisma.usuario.update({
-            where: { id: usuarioId },
-            data: { nome, email}
+            where: { id: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId) },
+            data: { nome, email }
         });
         res.json({ nome: usuario.nome, email: usuario.email });
     } catch (error) {
@@ -90,7 +90,7 @@ export async function obterUsuario(req, res) {
     try {
         const usuarioId = req.usuario.id;
         const usuario = await prisma.usuario.findUnique({
-            where: { id: usuarioId},
+            where: { id: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId) },
             select: { nome: true, email: true }
         });
 

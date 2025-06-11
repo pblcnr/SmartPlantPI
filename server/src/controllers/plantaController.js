@@ -15,10 +15,15 @@ export async function criarPlanta(req, res) {
         const planta = await prisma.planta.create({
             data: {
                 nome: nome,
-                usuarioId: usuarioId
+                usuarioId: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId)
             }
         });
-        res.status(201).json(planta);
+        // Converte BigInt para string antes de retornar
+        res.status(201).json({
+            ...planta,
+            id: planta.id.toString(),
+            usuarioId: planta.usuarioId.toString()
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Erro ao criar planta." });
@@ -31,9 +36,15 @@ export async function listarPlantas(req, res) {
 
     try {
         const plantas = await prisma.planta.findMany({
-            where: { usuarioId }
+            where: { usuarioId: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId) }
         });
-        res.json(plantas);
+        // Converte BigInt para string antes de retornar
+        const plantasConvertidas = plantas.map(planta => ({
+            ...planta,
+            id: planta.id.toString(),
+            usuarioId: planta.usuarioId.toString()
+        }));
+        res.json(plantasConvertidas);
     } catch (error) {
         res.status(500).json({ error: "Erro ao buscar plantas." });
     }
@@ -46,13 +57,18 @@ export async function detalharPlanta(req, res) {
 
     try {
         const planta = await prisma.planta.findFirst({
-            where: { id: Number(id), usuarioId }
+            where: { id: BigInt(id), usuarioId: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId) }
         });
 
         if (!planta) {
             return res.status(404).json({ error: "Planta não encontrada." });
         }
-        res.json(planta);
+        // Converte BigInt para string antes de retornar
+        res.json({
+            ...planta,
+            id: planta.id.toString(),
+            usuarioId: planta.usuarioId.toString()
+        });
     } catch (error) {
         res.status(500).json({ error: "Erro ao buscar planta." });
     }
@@ -66,7 +82,7 @@ export async function atualizarPlanta(req, res) {
 
     try {
         const planta = await prisma.planta.updateMany({
-            where: { id: Number(id), usuarioId },
+            where: { id: BigInt(id), usuarioId: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId) },
             data: { nome: nome }
         });
 
@@ -87,7 +103,7 @@ export async function removerPlanta(req, res) {
 
     try {
         const planta = await prisma.planta.deleteMany({
-            where: { id: Number(id), usuarioId }
+            where: { id: BigInt(id), usuarioId: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId) }
         });
 
         if (planta.count === 0) {

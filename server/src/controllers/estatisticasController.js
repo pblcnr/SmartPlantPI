@@ -10,7 +10,7 @@ export async function estatisticasSensor(req, res) {
             where: { usuarioId },
             select: { id: true }
         });
-        const plantasIds = plantas.map(p => p.id);
+        const plantasIds = plantas.map(p => typeof p.id === "bigint" ? Number(p.id) : p.id);
 
         // Busca dados do sensor
         const dados = await prisma.sensordata.findMany({

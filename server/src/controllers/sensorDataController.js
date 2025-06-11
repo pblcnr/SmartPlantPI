@@ -18,7 +18,12 @@ export async function registrarSensorData(req, res) {
                 plantaId: Number(plantaId)
             }
         });
-        res.status(201).json(sensorData);
+        // Converte BigInt para string antes de retornar
+        res.status(201).json({
+            ...sensorData,
+            id: sensorData.id.toString(),
+            plantaId: sensorData.plantaId.toString()
+        });
     } catch (error) {
         res.status(500).json({ error: "Erro ao registrar dados do sensor." });
     }
@@ -33,7 +38,13 @@ export async function listarSensorData(req, res) {
             where: { plantaId: Number(plantaId) },
             orderBy: { timestamp: "desc" }
         });
-        res.json(historico);
+        // Converte BigInt para string antes de retornar
+        const historicoConvertido = historico.map(item => ({
+            ...item,
+            id: item.id.toString(),
+            plantaId: item.plantaId.toString()
+        }));
+        res.json(historicoConvertido);
     } catch (error) {
         res.status(500).json({ error: "Erro ao buscar histórico do sensor." });
     }
