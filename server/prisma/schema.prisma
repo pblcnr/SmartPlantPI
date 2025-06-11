@@ -1,59 +1,67 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id        Int     @id @default(autoincrement())
-  nome      String
-  email     String  @unique
-  senha     String
-  plantas   Planta[]
+model usuario {
+  id      BigInt   @id(map: "idx_16413_primary") @default(autoincrement())
+  email   String   @unique(map: "idx_16413_usuario_email_key") @db.VarChar(191)
+  senha   String   @db.VarChar(191)
+  nome    String   @db.VarChar(191)
+  plantas planta[]
+
+  @@map("usuario")
 }
 
-model Planta {
-  id                Int       @id @default(autoincrement())
-  nome              String
-  usuarioId         Int
-  usuario           Usuario   @relation(fields: [usuarioId], references: [id])
-  sensorData        SensorData[]
-  alerta            Alerta?
-  historicoAlertas  HistoricoAlerta[]
+model planta {
+  id               BigInt            @id(map: "idx_16402_primary") @default(autoincrement())
+  usuarioId        BigInt            @map("usuarioid")
+  nome             String            @db.VarChar(191)
+  alerta           alerta?
+  historicoalertas historicoalerta[]
+  usuario          usuario           @relation(fields: [usuarioId], references: [id])
+  sensordata       sensordata[]
+
+  @@index([usuarioId], map: "idx_16402_planta_usuarioid_fkey")
+  @@map("planta")
 }
 
-model SensorData {
-  id                Int         @id @default(autoincrement())
-  plantaId          Int
-  timestamp         DateTime    @default(now())
-  temperatura       Float
-  umidade           Float
-  planta            Planta      @relation(fields: [plantaId], references: [id])
-  historicoAlertas  HistoricoAlerta[]
+model sensordata {
+  id               BigInt            @id(map: "idx_16407_primary") @default(autoincrement())
+  plantaId         BigInt            @map("plantaid")
+  timestamp        DateTime          @default(now()) @db.Timestamptz(6)
+  temperatura      Float
+  umidade          Float
+  historicoalertas historicoalerta[]
+  planta           planta            @relation(fields: [plantaId], references: [id])
+
+  @@index([plantaId], map: "idx_16407_sensordata_plantaid_fkey")
+  @@map("sensordata")
 }
 
-model Alerta {
-  id            Int       @id @default(autoincrement())
-  plantaId      Int       @unique
-  minUmidade    Float
-  planta        Planta    @relation(fields: [plantaId], references: [id])
+model alerta {
+  id         BigInt @id(map: "idx_16391_primary") @default(autoincrement())
+  plantaId   BigInt @unique(map: "idx_16391_alerta_plantaid_key") @map("plantaid")
+  minUmidade Float  @map("minumidade")
+  planta     planta @relation(fields: [plantaId], references: [id])
+
+  @@map("alerta")
 }
 
-model HistoricoAlerta {
-  id            Int         @id @default(autoincrement())
-  plantaId      Int
-  sensorDataId  Int
-  mensagem      String
-  timestamp     DateTime    @default(now())
-  planta        Planta      @relation(fields: [plantaId], references: [id])
-  sensorData    SensorData  @relation(fields: [sensorDataId], references: [id])
+model historicoalerta {
+  id           BigInt     @id(map: "idx_16396_primary") @default(autoincrement())
+  plantaId     BigInt     @map("plantaid")
+  sensorDataId BigInt     @map("sensordataid")
+  mensagem     String     @db.VarChar(191)
+  timestamp    DateTime   @default(now()) @db.Timestamptz(6)
+  planta       planta     @relation(fields: [plantaId], references: [id])
+  sensordata   sensordata @relation(fields: [sensorDataId], references: [id])
+
+  @@index([plantaId], map: "idx_16396_historicoalerta_plantaid_fkey")
+  @@index([sensorDataId], map: "idx_16396_historicoalerta_sensordataid_fkey")
+  @@map("historicoalerta")
 }

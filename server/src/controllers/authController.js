@@ -7,9 +7,9 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 export async function registro(req, res) {
-    const { nome, email, password } = req.body;
+    const { nome, email, senha } = req.body;
 
-    if (!nome || !email || !password) {
+    if (!nome || !email || !senha) {
         return res.status(400).json({ error: "Nome, email e senha são obrigatórios." });
     }
 
@@ -20,7 +20,7 @@ export async function registro(req, res) {
             return res.status(409).json({ error: "Email já cadastrado." });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(senha, 10);
 
         const usuario = await prisma.usuario.create({
             data: { nome, email, senha: hashedPassword },
@@ -34,9 +34,9 @@ export async function registro(req, res) {
 }
 
 export async function login(req, res) {
-    const { email, password } = req.body;
+    const { email, senha } = req.body;
 
-    if (!email || !password) {
+    if (!email || !senha) {
         return res.status(400).json({ error: "Email e senha são obrigatórios." });
     }
 
@@ -47,7 +47,7 @@ export async function login(req, res) {
             return res.status(401).json({ error: "Usuário ou senha inválidos." });
         }
 
-        const senhaCorreta = await bcrypt.compare(password, usuario.senha);
+        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
 
         if (!senhaCorreta) {
             return res.status(401).json({ error: "Usuário ou senha inválidos" });

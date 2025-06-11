@@ -11,7 +11,7 @@ export async function registrarSensorData(req, res) {
     }
 
     try {
-        const sensorData = await prisma.sensorData.create({
+        const sensorData = await prisma.sensordata.create({
             data: {
                 temperatura,
                 umidade,
@@ -29,7 +29,7 @@ export async function listarSensorData(req, res) {
     const { plantaId } = req.params;
 
     try {
-        const historico = await prisma.sensorData.findMany({
+        const historico = await prisma.sensordata.findMany({
             where: { plantaId: Number(plantaId) },
             orderBy: { timestamp: "desc" }
         });

@@ -13,7 +13,7 @@ export async function estatisticasSensor(req, res) {
         const plantasIds = plantas.map(p => p.id);
 
         // Busca dados do sensor
-        const dados = await prisma.sensorData.findMany({
+        const dados = await prisma.sensordata.findMany({
             where: { plantaId: { in: plantasIds } },
             select: { umidade: true, temperatura: true }
         });
