@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Modal, SafeAreaView, ScrollView as RNScrollView } from 'react-native';
 import { LineChart, BarChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const estatisticas = [
   { key: 'todas', label: 'Todas', tipo: 'all' },
@@ -9,16 +10,18 @@ const estatisticas = [
   { key: 'temperatura', label: 'Temperatura', tipo: 'bar', cor: '#facc15' },
 ];
 
-export default function DashboardScreen({ token }) {
+export default function DashboardScreen({ token, setToken, navigation }) {
   const [stats, setStats] = useState(null);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [estatisticaSelecionada, setEstatisticaSelecionada] = useState('umidade');
+
+  const API_URL = "https://smartplant-backend-ct0o.onrender.com";
 
   useEffect(() => {
     let interval;
     async function fetchStats() {
       try {
-        const res = await fetch('http://192.168.100.190:3001/api/estatisticas', {
+        const res = await fetch(`${API_URL}/api/estatisticas`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
@@ -32,6 +35,12 @@ export default function DashboardScreen({ token }) {
     return () => clearInterval(interval);
   }, []);
 
+  // Função para sair
+  async function handleLogout() {
+    await AsyncStorage.removeItem("token");
+    setToken(null);
+  }
+
   if (!stats) return <Text style={{ textAlign: 'center', marginTop: 40 }}>Carregando estatísticas...</Text>;
 
   // Flags para seleção
@@ -39,14 +48,20 @@ export default function DashboardScreen({ token }) {
   const isTemperatura = estatisticaSelecionada === 'temperatura';
   const isTodas = estatisticaSelecionada === 'todas';
 
-  // Dados para gráficos
-  const dadosUmidade = stats.umidades.slice(-15);
-  const dadosTemperatura = stats.temperaturas.slice(-15);
-  const labelsUmidade = dadosUmidade.map((_, i) => `${i + 1}`);
-  const labelsTemperatura = dadosTemperatura.map((_, i) => `${i + 1}`);
+  // Dados para gráficos (tratando valores inválidos)
+  const dadosUmidade = Array.isArray(stats.umidades)
+    ? stats.umidades.slice(-15).map(x => Number.isFinite(x) ? x : 0)
+    : [];
+  const dadosTemperatura = Array.isArray(stats.temperaturas)
+    ? stats.temperaturas.slice(-15).map(x => Number.isFinite(x) ? x : 0)
+    : [];
+  const dadosUmidadeChart = dadosUmidade.length ? dadosUmidade : [0];
+  const dadosTemperaturaChart = dadosTemperatura.length ? dadosTemperatura : [0];
+  const labelsUmidade = dadosUmidadeChart.map((_, i) => `${i + 1}`);
+  const labelsTemperatura = dadosTemperaturaChart.map((_, i) => `${i + 1}`);
 
   // Dados dinâmicos para seleção única
-  const dados = isUmidade ? dadosUmidade : dadosTemperatura;
+  const dados = isUmidade ? dadosUmidadeChart : dadosTemperaturaChart;
   const labels = isUmidade ? labelsUmidade : labelsTemperatura;
   const media = isUmidade ? stats.mediaUmidade : stats.mediaTemperatura;
   const mediana = isUmidade ? stats.medianaUmidade : stats.medianaTemperatura;
@@ -94,6 +109,15 @@ export default function DashboardScreen({ token }) {
                 </Text>
               </TouchableOpacity>
             ))}
+            {/* Botão de sair */}
+            <TouchableOpacity
+              style={[styles.sidebarItem, { backgroundColor: "#fee2e2", marginTop: 32 }]}
+              onPress={handleLogout}
+            >
+              <Text style={[styles.sidebarItemText, { color: "#dc2626", fontWeight: "bold" }]}>
+                Sair
+              </Text>
+            </TouchableOpacity>
           </View>
         </Modal>
 
@@ -101,10 +125,8 @@ export default function DashboardScreen({ token }) {
           <Text style={styles.title}>Dashboard Estatístico</Text>
           <Text style={styles.subtitle}>{titulo}</Text>
 
-          {/* Se "Todas" selecionado, mostra ambos */}
           {(isTodas || isUmidade) && (
             <>
-              {/* Cards Umidade */}
               <View style={styles.cardRow}>
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Média Umidade</Text>
@@ -140,7 +162,7 @@ export default function DashboardScreen({ token }) {
                 <LineChart
                   data={{
                     labels: labelsUmidade,
-                    datasets: [{ data: dadosUmidade }]
+                    datasets: [{ data: dadosUmidadeChart }]
                   }}
                   width={chartWidthUmidade}
                   height={220}
@@ -150,7 +172,6 @@ export default function DashboardScreen({ token }) {
                   style={styles.chart}
                 />
               </RNScrollView>
-              {/* Porcentagem só para umidade */}
               <View 
                 style={[styles.percentContainer, 
                 isTodas && { marginBottom: 32 }]
@@ -158,16 +179,15 @@ export default function DashboardScreen({ token }) {
               >
                 <Text style={styles.percentLabel}>Umidade acima de 50%:</Text>
                 <View style={styles.percentBarBg}>
-                  <View style={[styles.percentBar, { width: `${stats.porcentagemAcima50}%` }]} />
+                  <View style={[styles.percentBar, { width: `${stats.porcentagemAcima50 ?? 0}%` }]} />
                 </View>
-                <Text style={styles.percentValue}>{stats.porcentagemAcima50?.toFixed(1)}%</Text>
+                <Text style={styles.percentValue}>{stats.porcentagemAcima50?.toFixed(1) ?? '0.0'}%</Text>
               </View>
             </>
           )}
 
           {(isTodas || isTemperatura) && (
             <>
-              {/* Cards Temperatura */}
               <View style={styles.cardRow}>
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Média Temp.</Text>
@@ -203,7 +223,7 @@ export default function DashboardScreen({ token }) {
                 <BarChart
                   data={{
                     labels: labelsTemperatura,
-                    datasets: [{ data: dadosTemperatura }]
+                    datasets: [{ data: dadosTemperaturaChart }]
                   }}
                   width={chartWidthTemperatura}
                   height={220}

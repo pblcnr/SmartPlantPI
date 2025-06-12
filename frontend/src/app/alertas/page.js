@@ -6,6 +6,7 @@ import AlertPanel from "../components/AlertPanel";
 export default function Alertas() {
   const [alertas, setAlertas] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const API_URL = "https://smartplant-backend-ct0o.onrender.com";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -13,7 +14,7 @@ export default function Alertas() {
       window.location.href = "/auth";
       return;
     }
-    fetch("http://localhost:3001/api/alertas", {
+    fetch(`${API_URL}/api/alertas`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())

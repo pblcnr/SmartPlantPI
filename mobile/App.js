@@ -9,12 +9,16 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     AsyncStorage.getItem('token').then(t => {
       if (t) setToken(t);
+      setLoading(false);
     });
   }, []);
+
+  if (loading) return null;
 
   return (
     <NavigationContainer>
@@ -28,7 +32,7 @@ export default function App() {
           </Stack.Screen>
         ) : (
           <Stack.Screen name="Dashboard" options={{ headerShown: false }}>
-            {props => <DashboardScreen {...props} token={token} />}
+            {props => <DashboardScreen {...props} token={token} setToken={setToken} />}
           </Stack.Screen>
         )}
       </Stack.Navigator>

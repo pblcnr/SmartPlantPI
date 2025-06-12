@@ -8,6 +8,7 @@ export default function MinhasPlantas() {
   const [carregando, setCarregando] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [novaPlanta, setNovaPlanta] = useState({ nome: "" });
+  const API_URL = "https://smartplant-backend-ct0o.onrender.com";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -15,7 +16,7 @@ export default function MinhasPlantas() {
       window.location.href = "/auth";
       return;
     }
-    fetch("http://localhost:3001/api/plantas", {
+    fetch(`${API_URL}/api/plantas`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -28,7 +29,7 @@ export default function MinhasPlantas() {
         // Para cada planta, buscar a última leitura
         const plantasComLeitura = await Promise.all(
           plantas.map(async (planta) => {
-            const res = await fetch(`http://localhost:3001/api/plantas/${planta.id}/sensordata`, {
+            const res = await fetch(`${API_URL}/api/plantas/${planta.id}/sensordata`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             const historico = await res.json();
@@ -50,7 +51,7 @@ export default function MinhasPlantas() {
     const token = localStorage.getItem("token");
     if (!window.confirm("Tem certeza que deseja remover esta planta?")) return;
     try {
-      const res = await fetch(`http://localhost:3001/api/plantas/${plantaId}`, {
+      const res = await fetch(`${API_URL}/api/plantas/${plantaId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -69,7 +70,7 @@ export default function MinhasPlantas() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("http://localhost:3001/api/plantas", {
+      const res = await fetch(`${API_URL}/api/plantas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

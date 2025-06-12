@@ -16,12 +16,15 @@ export default function PlantCard({ planta, onDelete }) {
       )}
       <div className="flex gap-2 mt-4">
         <button className="px-4 py-1 bg-green-700 text-white rounded hover:bg-green-800 cursor-pointer">Detalhes</button>
-        <button
-          className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-800 cursor-pointer"
-          onClick={() => onDelete(planta.id)}
-        >
-          Deletar
-        </button>
+        {/* Só mostra o botão Deletar se o id for diferente de 1 */}
+        {String(planta.id) !== "1" && (
+          <button
+            className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-800 cursor-pointer"
+            onClick={() => onDelete(planta.id)}
+          >
+            Deletar
+          </button>
+        )}
       </div>
     </div>
   );

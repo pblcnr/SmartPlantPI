@@ -3,8 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingVi
 
 export default function AuthScreen({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
-  const [form, setForm] = useState({ nome: '', email: '', password: '' });
+  const [form, setForm] = useState({ nome: '', email: '', senha: '' });
   const [mensagem, setMensagem] = useState('');
+
+  const API_URL = "https://smartplant-backend-ct0o.onrender.com";
 
   function handleChange(name, value) {
     setForm({ ...form, [name]: value });
@@ -14,7 +16,7 @@ export default function AuthScreen({ onLogin }) {
     setMensagem('');
     const url = isLogin ? '/api/auth/login' : '/api/auth/registro';
     try {
-      const res = await fetch(`http://192.168.100.190:3001${url}`, {
+      const res = await fetch(`${API_URL}${url}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -54,8 +56,8 @@ export default function AuthScreen({ onLogin }) {
         <TextInput
           style={styles.input}
           placeholder="Senha"
-          value={form.password}
-          onChangeText={text => handleChange('password', text)}
+          value={form.senha}
+          onChangeText={text => handleChange('senha', text)}
           secureTextEntry
         />
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>

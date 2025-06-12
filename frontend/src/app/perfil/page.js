@@ -7,6 +7,7 @@ export default function Perfil() {
   const [editando, setEditando] = useState(false);
   const [form, setForm] = useState({ nome: "", email: "" });
   const [mensagem, setMensagem] = useState("");
+  const API_URL = "https://smartplant-backend-ct0o.onrender.com";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -15,7 +16,7 @@ export default function Perfil() {
       return;
     }
     // Buscar dados do usuário
-    fetch("http://localhost:3001/api/auth/usuario", {
+    fetch(`${API_URL}/api/auth/usuario`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -34,7 +35,7 @@ export default function Perfil() {
     setMensagem("");
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("http://localhost:3001/api/auth/usuario", {
+      const res = await fetch(`${API_URL}/api/auth/usuario`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

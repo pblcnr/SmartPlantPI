@@ -101,6 +101,10 @@ export async function removerPlanta(req, res) {
     const usuarioId = req.usuario.id;
     const { id } = req.params;
 
+    if (id === "1" || id === 1) {
+        return res.status(403).json({ error: "Não é permitido remover a planta principal." });
+    }
+
     try {
         const planta = await prisma.planta.deleteMany({
             where: { id: BigInt(id), usuarioId: typeof usuarioId === "bigint" ? usuarioId : BigInt(usuarioId) }

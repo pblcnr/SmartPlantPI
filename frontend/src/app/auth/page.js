@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
-  const [form, setForm] = useState({ nome: "", email: "", password: "" });
+  const [form, setForm] = useState({ nome: "", email: "", senha: "" });
   const [mensagem, setMensagem] = useState("");
 
   function handleChange(e) {
@@ -16,7 +16,8 @@ export default function Home() {
     setMensagem("");
     const url = isLogin ? "/api/auth/login" : "/api/auth/registro";
     try {
-      const res = await fetch(`http://localhost:3001${url}`, {
+      const API_URL = "https://smartplant-backend-ct0o.onrender.com";
+      const res = await fetch(`${API_URL}${url}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -74,10 +75,10 @@ export default function Home() {
             />
             <input
               type="password"
-              name="password"
+              name="senha"
               placeholder="Senha"
               className="w-full mb-6 p-3 border border-green-300 rounded text-gray-900 text-lg"
-              value={form.password}
+              value={form.senha}
               onChange={handleChange}
               required
             />
