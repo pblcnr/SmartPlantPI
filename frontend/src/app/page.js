@@ -57,7 +57,7 @@ export default function Dashboard() {
       });
 
     // Buscar alertas recentes (ajuste conforme sua lógica)
-    fetch(`${API_URL}/api/plantas/1/alertas`, {
+    fetch(`${API_URL}/api/plantas/1/alerta`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
