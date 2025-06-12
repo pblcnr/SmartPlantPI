@@ -15,7 +15,6 @@ export default function PlantCard({ planta, onDelete }) {
         <p className="text-gray-500 mt-2">Sem leituras recentes.</p>
       )}
       <div className="flex gap-2 mt-4">
-        <button className="px-4 py-1 bg-green-700 text-white rounded hover:bg-green-800 cursor-pointer">Detalhes</button>
         {/* Só mostra o botão Deletar se o id for diferente de 1 */}
         {String(planta.id) !== "1" && (
           <button
