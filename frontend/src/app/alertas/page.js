@@ -14,18 +14,23 @@ export default function Alertas() {
       window.location.href = "/auth";
       return;
     }
-    fetch(`${API_URL}/api/alertas`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(data => {
+    async function fetchAlertas() {
+      try {
+        const res = await fetch(`${API_URL}/api/alertas`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
         setAlertas(Array.isArray(data) ? data : []);
-        setCarregando(false);
-      })
-      .catch(() => {
-        setCarregando(false);
+      } catch {
         setAlertas([]);
-      });
+      } finally {
+        setCarregando(false);
+      }
+    }
+    fetchAlertas();
+    // Atualiza a cada 10 segundos
+    const interval = setInterval(fetchAlertas, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   if (carregando) {

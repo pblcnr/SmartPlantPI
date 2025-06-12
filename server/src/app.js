@@ -29,6 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/plantas", plantaRoutes);
 app.use("/api/plantas", sensorDataRoutes);
 app.use("/api/plantas", alertaRoutes);
+app.use("/api/alertas", alertaRoutes);
 app.use("/api", estatisticasRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));

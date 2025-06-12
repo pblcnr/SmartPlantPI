@@ -4,8 +4,8 @@ import { configurarAlerta, consultarAlerta, listarAlertasUsuario } from "../cont
 
 const router = express.Router();
 
-router.get("/alertas", autenticarToken, listarAlertasUsuario);
-router.post("/:plantId/alerta", autenticarToken, configurarAlerta);
-router.get("/:plantId/alerta", autenticarToken, consultarAlerta);
+router.get("/", autenticarToken, listarAlertasUsuario);
+router.post("/:plantaId/alerta", autenticarToken, configurarAlerta);
+router.get("/:plantaId/alerta", autenticarToken, consultarAlerta);
 
 export default router;

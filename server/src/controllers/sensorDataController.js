@@ -18,6 +18,23 @@ export async function registrarSensorData(req, res) {
                 plantaId: Number(plantaId)
             }
         });
+
+        // Busca o limite de alerta da planta
+        const alerta = await prisma.alerta.findUnique({
+            where: { plantaId: Number(plantaId) }
+        });
+
+        // Se houver alerta e a umidade estiver abaixo do limite, salva no histórico
+        if (alerta && typeof alerta.minUmidade === "number" && umidade < alerta.minUmidade) {
+            await prisma.historicoalerta.create({
+                data: {
+                    plantaId: Number(plantaId),
+                    sensorDataId: sensorData.id,
+                    mensagem: `Umidade baixa (${umidade}% < ${alerta.minUmidade}%)`
+                }
+            });
+        }
+
         // Converte BigInt para string antes de retornar
         res.status(201).json({
             ...sensorData,
