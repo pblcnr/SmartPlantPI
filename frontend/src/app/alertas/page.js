@@ -28,14 +28,9 @@ export default function Alertas() {
       }
     }
     fetchAlertas();
-    // Atualiza a cada 10 segundos
-    const interval = setInterval(fetchAlertas, 10000);
+    const interval = setInterval(fetchAlertas, 900000);
     return () => clearInterval(interval);
   }, []);
-
-  if (carregando) {
-    return <div className="flex items-center justify-center min-h-screen">Carregando...</div>;
-  }
 
   return (
     <div className="flex min-h-screen">

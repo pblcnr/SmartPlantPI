@@ -11,7 +11,7 @@ export default function AlertPanel({ alertas }) {
               <span className="font-semibold">{alerta.plantaNome || alerta.planta?.nome || "Planta"}:</span>{" "}
               {alerta.tipo === "umidade"
                 ? `Umidade baixa (${alerta.valorAtual ?? "-"}% < ${alerta.limite ?? "-"})`
-                : alerta.mensagem || "Condição de alerta atingida"}
+                : alerta.mensagem || "Alerta: Umidade abaixo de 50%"}
             </li>
           ))}
         </ul>

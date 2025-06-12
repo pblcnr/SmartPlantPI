@@ -114,10 +114,6 @@ export default function Dashboard() {
     }
   }
 
-  if (carregando) {
-    return <div className="flex items-center justify-center min-h-screen">Carregando...</div>
-  }
-
   return (
     <div className="flex min-h-screen">
       <Sidebar onLogout={handleLogout} />
