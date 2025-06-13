@@ -10,7 +10,10 @@ export default function PlantCard({ planta, onDelete }) {
           <p>Temperatura: <span className="font-semibold">{leitura.temperatura}°C</span></p>
           <p>Umidade: <span className="font-semibold">{leitura.umidade}%</span></p>
           <p className="text-gray-500">
-            Data: {new Date(leitura.timestamp).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}
+            Data: {leitura.timestamp
+              ? new Date(new Date(leitura.timestamp).getTime() + 3 * 60 * 60 * 1000)
+                .toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })
+              : "Sem data"}
           </p>
         </div>
       ) : (
