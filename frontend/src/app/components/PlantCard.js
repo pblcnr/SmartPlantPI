@@ -1,7 +1,6 @@
 export default function PlantCard({ planta, onDelete }) {
   const leitura = planta.ultimaLeitura;
 
-  console.log("Valor: ", leitura.timestamp);
   return (
     <div className="bg-white rounded shadow p-4 mb-4">
       <h3 className="text-xl font-bold text-green-700">{planta.nome}</h3>
@@ -11,15 +10,7 @@ export default function PlantCard({ planta, onDelete }) {
           <p>Temperatura: <span className="font-semibold">{leitura.temperatura}°C</span></p>
           <p>Umidade: <span className="font-semibold">{leitura.umidade}%</span></p>
           <p className="text-gray-500">
-            Data: {leitura.timestamp
-              ? new Date(
-                typeof leitura.timestamp === "number"
-                  ? leitura.timestamp
-                  : leitura.timestamp.endsWith("Z")
-                    ? leitura.timestamp
-                    : leitura.timestamp + "Z"
-              ).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })
-              : "Sem data"}
+            Data: {new Date(leitura.timestamp).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}
           </p>
         </div>
       ) : (
