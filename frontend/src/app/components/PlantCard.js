@@ -1,6 +1,7 @@
 export default function PlantCard({ planta, onDelete }) {
   const leitura = planta.ultimaLeitura;
 
+  console.log("Valor: ", leitura.timestamp);
   return (
     <div className="bg-white rounded shadow p-4 mb-4">
       <h3 className="text-xl font-bold text-green-700">{planta.nome}</h3>
